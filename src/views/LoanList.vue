@@ -157,6 +157,7 @@ onUnmounted(() => {
 }
 
 .filter-toggle-btn {
+  visibility: hidden;
   flex: 0 1 auto;
   padding: 10px 15px;
   background-color: #007bff;

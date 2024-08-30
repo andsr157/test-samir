@@ -8,12 +8,14 @@ const router = createRouter({
     {
       path: '/loans',
       name: 'home',
-      component: LoanList
+      component: LoanList,
+      meta: { layout: 'DefaultLayout' },
     },
     {
       path: '/loan/:id',
       name: 'loan-detail',
-      component: LoanListDetail
+      component: LoanListDetail,
+      meta: { layout: 'DefaultLayout' },
     }
   ]
 })

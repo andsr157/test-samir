@@ -1,7 +1,22 @@
 <script setup lang="ts">
-import { RouterLink, RouterView } from "vue-router"
+import { RouterView, useRoute } from "vue-router"
+import { computed } from "vue"
+import DefaultLayout from "@/layouts/DefaultLayout.vue"
+
+const layouts = {
+  DefaultLayout,
+}
+
+const route = useRoute()
+
+const layoutComponent = computed(() => {
+  const layout = route.meta.layout || "DefaultLayout"
+  return layouts[layout as keyof typeof layouts]
+})
 </script>
 
 <template>
-  <RouterView />
+  <component :is="layoutComponent">
+    <RouterView />
+  </component>
 </template>

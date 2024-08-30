@@ -115,7 +115,7 @@ onUnmounted(() => {
 
 <style scoped>
 .loan-list-container {
-  padding: 48px;
+  padding: 24px 0px;
   margin: 0 auto;
   font-family: "Arial", sans-serif;
   color: #333;

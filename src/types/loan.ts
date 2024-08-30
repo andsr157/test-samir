@@ -47,7 +47,9 @@ export interface FilterList {
     label: string,
     type: string,
     values: {
-        min: null,
-        max: null
+        min?: number | null,
+        max?: number | null,
+        options?: string[];
+        selected?: string | string[] | null;
     }
 }

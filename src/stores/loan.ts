@@ -3,10 +3,13 @@ import type { Loan } from "@/types/loan";
 
 type SortField = 'amount' | 'interestRate' | 'term';
 
+type riskRating = { selected: string[] }
+
 interface FilterCriteria {
     amount?: { min: number | null; max: number | null };
     interestRate?: { min: number | null; max: number | null };
     term?: { min: number | null; max: number | null };
+    riskRating?: riskRating | null; // Tambahkan filter riskRating
 }
 
 export const useLoanStore = defineStore('loanStore', {
@@ -50,8 +53,8 @@ export const useLoanStore = defineStore('loanStore', {
             this.currentPage = page;
         },
 
-        sortLoans(sortBY: string) {
-            const [field, direction] = sortBY.split(":") as [SortField, 'asc' | 'desc'];
+        sortLoans(sortBy: string) {
+            const [field, direction] = sortBy.split(":") as [SortField, 'asc' | 'desc'];
             const isAscending = direction === 'asc';
 
             const sortOptions: Record<SortField, (a: Loan, b: Loan) => number> = {
@@ -66,8 +69,10 @@ export const useLoanStore = defineStore('loanStore', {
         },
 
         filterLoans(filters: FilterCriteria) {
+            console.log('Applying filters in store:', filters); // Debug log di store
+
             const isAllFiltersNull = Object.values(filters).every(filter =>
-                filter?.min === null && filter?.max === null
+                filter?.min === null || filter === null || (Array.isArray(filter) && filter.length === 0)
             );
 
             if (isAllFiltersNull) {
@@ -76,27 +81,44 @@ export const useLoanStore = defineStore('loanStore', {
                 this.filteredLoans = this.loan.filter(loan => {
                     let isMatch = true;
 
+                    // Amount filter
                     if (filters.amount) {
                         const { min, max } = filters.amount;
                         if (min !== null && loan.amount < min) isMatch = false;
                         if (max !== null && loan.amount > max) isMatch = false;
                     }
 
+                    // Interest Rate filter
                     if (filters.interestRate) {
                         const { min, max } = filters.interestRate;
                         if (min !== null && loan.interestRate < min) isMatch = false;
                         if (max !== null && loan.interestRate > max) isMatch = false;
                     }
 
+                    // Term filter
                     if (filters.term) {
                         const { min, max } = filters.term;
                         if (min !== null && loan.term < min) isMatch = false;
                         if (max !== null && loan.term > max) isMatch = false;
                     }
 
+                    // Risk Rating filter
+                    if (filters.riskRating?.selected && filters.riskRating.selected.length > 0) {
+                        console.log('Loan riskRating:', loan.riskRating); // Debug log untuk loan riskRating
+                        console.log('Allowed riskRatings:', filters.riskRating.selected); // Debug log untuk nilai yang diperbolehkan
+
+                        // Pastikan loan.riskRating termasuk dalam filters.riskRating.selected
+                        if (!filters.riskRating.selected.includes(loan.riskRating)) {
+                            isMatch = false;
+                        }
+                    }
+
                     return isMatch;
                 });
             }
+
+            console.log('Filtered loans:', this.filteredLoans); // Debug log untuk hasil filter
         }
+
     }
 });

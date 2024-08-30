@@ -17,25 +17,21 @@ const updateWindowWidth = () => {
 const { paginatedLoans, currentPage, totalPages, isLoading } =
   storeToRefs(loanStore)
 
-watch(
-  () => loanStore.paginatedLoans,
-  (newVal) => {
-    console.log("Updated paginatedLoans:", newVal)
-  }
-)
-
+// Watch for changes in window width to toggle filter visibility
 watch(windowWidth, (newWidth) => {
-  console.log("berubah", newWidth)
-  showFilter.value = newWidth > 768
-  console.log(showFilter.value)
+  showFilter.value = newWidth > 1024
 })
 
-const showFilter = ref(true)
+const showFilter = ref(windowWidth.value > 1024) // Initialize with correct state based on window width
 
 const goToPage = (page: number): void => {
   if (page > 0 && page <= totalPages.value) {
     loanStore.setCurrentPage(page)
   }
+}
+
+const handleShowFilter = () => {
+  showFilter.value = !showFilter.value
 }
 
 onMounted(async () => {
@@ -60,6 +56,9 @@ onUnmounted(() => {
         :sortingOptions="SORTING_LIST"
         :onSortChange="loanStore.sortLoans"
       />
+      <button @click="handleShowFilter" class="filter-toggle-btn">
+        Filters
+      </button>
     </div>
 
     <div v-if="isLoading">Loading...</div>
@@ -156,7 +155,9 @@ onUnmounted(() => {
 
 .filter-toggle-btn {
   visibility: hidden;
+  height: 100%;
   padding: 10px 15px;
+  font-size: 16px;
   background-color: #007bff;
   color: white;
   border: none;
@@ -235,24 +236,12 @@ onUnmounted(() => {
 
 /* Responsive Design */
 @media (max-width: 1024px) {
-  .search-sort-container {
-    flex-direction: column;
-    align-items: center;
-    gap: 10px;
+  .loan-list-wrapper {
+    grid-template-columns: 1fr;
   }
 
-  .loan-list-content {
-    flex-direction: column;
-  }
-
-  .filter-section {
-    display: none;
-    width: 100%;
-    margin: 0 0 20px 0;
-  }
-
-  .filter-section.show-filter {
-    display: block;
+  .filter-toggle-btn {
+    visibility: visible;
   }
 
   .loan-cards {
@@ -266,14 +255,8 @@ onUnmounted(() => {
   }
 
   .search-bar,
-  .sort-dropdown,
-  .filter-toggle-btn {
-    width: 100%;
+  .sort-dropdown {
     max-width: 100%;
-  }
-
-  .loan-list-wrapper {
-    display: block;
   }
 }
 </style>

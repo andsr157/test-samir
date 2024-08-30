@@ -48,27 +48,28 @@ export const FILTER_LIST: FilterList[] = [
         id: 'amount',
         label: 'Amount',
         type: 'range',
-        values: {
-            min: null,
-            max: null
-        }
+        values: { min: null, max: null },
     },
     {
         id: 'interestRate',
         label: 'Interest Rate',
         type: 'range',
-        values: {
-            min: null,
-            max: null
-        }
+        values: { min: null, max: null },
     },
     {
         id: 'term',
         label: 'Term',
         type: 'range',
+        values: { min: null, max: null },
+    },
+    {
+        id: 'riskRating',
+        label: 'Risk Rating',
+        type: 'multiple',
         values: {
-            min: null,
-            max: null
-        }
-    }
-] 
+            options: ['A', 'B', 'C', 'D'],
+            selected: [] as string[],
+        },
+    },
+]
+

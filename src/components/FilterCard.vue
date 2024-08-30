@@ -184,6 +184,7 @@ const handleMultipleSelection = (filterId: string, option: string) => {
 .checkbox-group {
   display: flex;
   flex-wrap: wrap;
+  gap: 14px;
 }
 
 .checkbox-label {
@@ -194,7 +195,7 @@ const handleMultipleSelection = (filterId: string, option: string) => {
 
 .apply-filter-btn {
   padding: 10px;
-  background-color: #28a745;
+  background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
@@ -202,6 +203,6 @@ const handleMultipleSelection = (filterId: string, option: string) => {
 }
 
 .apply-filter-btn:hover {
-  background-color: #218838;
+  background-color: #0056b3;
 }
 </style>

@@ -9,14 +9,14 @@ interface FilterCriteria {
     amount?: { min: number | null; max: number | null };
     interestRate?: { min: number | null; max: number | null };
     term?: { min: number | null; max: number | null };
-    riskRating?: riskRating | null; // Tambahkan filter riskRating
+    riskRating?: riskRating | null;
 }
 
 export const useLoanStore = defineStore('loanStore', {
     state: () => ({
         loan: [] as Loan[],
         filteredLoans: [] as Loan[],
-        perPage: 6,
+        perPage: 2,
         currentPage: 1,
         isLoading: false,
     }),
@@ -69,8 +69,6 @@ export const useLoanStore = defineStore('loanStore', {
         },
 
         filterLoans(filters: FilterCriteria) {
-            console.log('Applying filters in store:', filters); // Debug log di store
-
             const isAllFiltersNull = Object.values(filters).every(filter =>
                 filter?.min === null || filter === null || (Array.isArray(filter) && filter.length === 0)
             );
@@ -104,10 +102,6 @@ export const useLoanStore = defineStore('loanStore', {
 
                     // Risk Rating filter
                     if (filters.riskRating?.selected && filters.riskRating.selected.length > 0) {
-                        console.log('Loan riskRating:', loan.riskRating); // Debug log untuk loan riskRating
-                        console.log('Allowed riskRatings:', filters.riskRating.selected); // Debug log untuk nilai yang diperbolehkan
-
-                        // Pastikan loan.riskRating termasuk dalam filters.riskRating.selected
                         if (!filters.riskRating.selected.includes(loan.riskRating)) {
                             isMatch = false;
                         }
@@ -116,9 +110,17 @@ export const useLoanStore = defineStore('loanStore', {
                     return isMatch;
                 });
             }
-
-            console.log('Filtered loans:', this.filteredLoans); // Debug log untuk hasil filter
+        },
+        searchLoans(query: string) {
+            if (!query) {
+                this.filteredLoans = [...this.loan];
+            } else {
+                this.filteredLoans = this.loan.filter((loan) =>
+                    loan.id.toLowerCase().includes(query.toLowerCase()) ||
+                    loan.borrower.name.toLowerCase().includes(query.toLowerCase()) ||
+                    loan.purpose.toLowerCase().includes(query.toLowerCase())
+                );
+            }
         }
-
     }
 });

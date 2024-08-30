@@ -14,8 +14,12 @@ const goToDetails = () => {
 
 <template>
   <div class="loan-card">
+    <div class="loan-header">
+      <h3>{{ loan.purpose }}</h3>
+      <p class="borrower-name">Borrower: {{ loan.borrower.name }}</p>
+    </div>
     <div class="loan-info">
-      <p><strong>Amount:</strong> ${{ loan.amount }}</p>
+      <p><strong>Amount:</strong> ${{ loan.amount.toLocaleString() }}</p>
       <p><strong>Interest Rate:</strong> {{ loan.interestRate }}%</p>
       <p><strong>Term:</strong> {{ loan.term }} months</p>
       <p><strong>Risk Rating:</strong> {{ loan.riskRating }}</p>
@@ -26,46 +30,61 @@ const goToDetails = () => {
 
 <style scoped>
 .loan-card {
-  background-color: #ffffff;
-  padding: 20px;
-  border-radius: 10px;
-  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+  background-color: #f9f9f9;
+  padding: 24px;
+  border-radius: 12px;
+  box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
   display: flex;
   flex-direction: column;
   justify-content: space-between;
-  transition: transform 0.3s ease;
+  transition: transform 0.3s ease, box-shadow 0.3s ease;
 }
 
 .loan-card:hover {
   transform: translateY(-5px);
+  box-shadow: 0 8px 16px rgba(0, 0, 0, 0.15);
+}
+
+.loan-header {
+  margin-bottom: 16px;
+}
+
+.loan-header h3 {
+  margin: 0;
+  font-size: 1.4em;
+  color: #343a40;
+}
+
+.borrower-name {
+  font-size: 1em;
+  color: #6c757d;
+  margin-top: 4px;
 }
 
 .loan-info {
-  margin-bottom: 15px;
-}
-
-.loan-info h3 {
-  margin-top: 0;
-  color: #007bff;
-  font-size: 1.5em;
+  margin-bottom: 16px;
 }
 
 .loan-info p {
-  margin: 5px 0;
-  font-size: 0.95em;
+  margin: 6px 0;
+  font-size: 1em;
+  color: #495057;
 }
 
 .details-btn {
-  padding: 10px 20px;
-  background-color: #28a745;
+  align-self: flex-start;
+  padding: 10px 24px;
+  background-color: #007bff;
   color: white;
   border: none;
-  border-radius: 4px;
+  border-radius: 6px;
   cursor: pointer;
-  transition: background-color 0.3s ease;
+  font-size: 1em;
+  transition: background-color 0.3s ease, transform 0.3s ease;
 }
 
 .details-btn:hover {
-  background-color: #218838;
+  background-color: #0056b3;
+  transform: translateY(-3px);
 }
 </style>

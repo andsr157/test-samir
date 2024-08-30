@@ -21,10 +21,7 @@ const selectItem = (sortBy: string) => {
 
 <template>
   <div class="dropdown">
-    <button @click="toggleDropdown" class="dropdown-button">
-      <i class="ci:sort-ascending"></i>
-      Sort by
-    </button>
+    <button @click="toggleDropdown" class="dropdown-button">Sort</button>
     <div v-if="isDropdownVisible" class="dropdown-content">
       <div
         v-for="(group, index) in sortingOptions"
@@ -54,15 +51,18 @@ const selectItem = (sortBy: string) => {
 }
 
 .dropdown-button {
+  width: 100%;
   background-color: #007bff;
   color: white;
   padding: 10px 15px;
-  font-size: 16px;
   border: none;
   border-radius: 4px;
   cursor: pointer;
 }
 
+.dropdown-button:hover {
+  background-color: #0056b3;
+}
 .dropdown-button:focus {
   outline: none;
 }

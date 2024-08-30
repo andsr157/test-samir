@@ -4,6 +4,7 @@ import { storeToRefs } from "pinia"
 import { useLoanStore } from "@/stores/loan"
 import LoanCard from "@/components/LoanCard.vue"
 import FilterCard from "@/components/FilterCard.vue"
+import Pagination from "@/components/Pagination.vue"
 import LoanSorting from "@/components/LoanSorting.vue"
 import { SORTING_LIST, FILTER_LIST } from "@/constants/loan.constants"
 
@@ -22,7 +23,10 @@ watch(windowWidth, (newWidth) => {
   showFilter.value = newWidth > 1024
 })
 
+const searchQuery = ref("")
 const showFilter = ref(windowWidth.value > 1024) // Initialize with correct state based on window width
+
+let debounceTimeout: ReturnType<typeof setTimeout> | null = null
 
 const goToPage = (page: number): void => {
   if (page > 0 && page <= totalPages.value) {
@@ -32,6 +36,19 @@ const goToPage = (page: number): void => {
 
 const handleShowFilter = () => {
   showFilter.value = !showFilter.value
+}
+
+const onSearch = (isImmediate = false) => {
+  if (debounceTimeout) {
+    clearTimeout(debounceTimeout)
+  }
+  if (isImmediate) {
+    loanStore.searchLoans(searchQuery.value)
+  } else {
+    debounceTimeout = setTimeout(() => {
+      loanStore.searchLoans(searchQuery.value)
+    }, 400)
+  }
 }
 
 onMounted(async () => {
@@ -51,7 +68,14 @@ onUnmounted(() => {
     </header>
 
     <div class="search-sort-container">
-      <input type="text" class="search-bar" placeholder="Search loans..." />
+      <input
+        type="text"
+        class="search-bar"
+        placeholder="Search loans..."
+        v-model="searchQuery"
+        @input="onSearch()"
+        @keyup.enter="onSearch(true)"
+      />
       <LoanSorting
         :sortingOptions="SORTING_LIST"
         :onSortChange="loanStore.sortLoans"
@@ -61,7 +85,7 @@ onUnmounted(() => {
       </button>
     </div>
 
-    <div v-if="isLoading">Loading...</div>
+    <div v-if="isLoading" class="loading">Loading...</div>
 
     <div v-else class="loan-list-wrapper">
       <FilterCard
@@ -81,30 +105,11 @@ onUnmounted(() => {
       </div>
     </div>
 
-    <div class="pagination">
-      <button
-        class="page-btn"
-        :disabled="currentPage === 1"
-        @click="goToPage(currentPage - 1)"
-      >
-        Previous
-      </button>
-      <button
-        v-for="page in totalPages"
-        :key="page"
-        @click="goToPage(page)"
-        :class="['page-number-btn', { active: currentPage === page }]"
-      >
-        {{ page }}
-      </button>
-      <button
-        class="page-btn"
-        :disabled="currentPage === totalPages"
-        @click="goToPage(currentPage + 1)"
-      >
-        Next
-      </button>
-    </div>
+    <Pagination
+      :currentPage="currentPage"
+      :totalPages="totalPages"
+      :onPageChange="goToPage"
+    />
   </div>
 </template>
 
@@ -128,41 +133,38 @@ onUnmounted(() => {
 /* Search and Sort Section */
 .search-sort-container {
   display: flex;
+  flex-wrap: wrap;
   align-items: center;
   justify-content: center;
-  margin-bottom: 20px;
   gap: 12px;
+  margin-bottom: 20px;
 }
 
 .search-bar {
-  width: 200px;
+  flex: 1 1 auto;
+  max-width: 300px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
 .sort-dropdown {
+  flex: 0 1 auto;
+  min-width: 150px;
   padding: 10px;
   border: 1px solid #ddd;
   border-radius: 4px;
 }
 
-.loan-list-wrapper {
-  display: grid;
-  grid-template-columns: 1fr 3fr;
-  gap: 20px;
-}
-
 .filter-toggle-btn {
-  visibility: hidden;
-  height: 100%;
+  flex: 0 1 auto;
   padding: 10px 15px;
-  font-size: 16px;
   background-color: #007bff;
   color: white;
   border: none;
   border-radius: 4px;
   cursor: pointer;
+  transition: background-color 0.3s ease;
 }
 
 .filter-toggle-btn:hover {
@@ -170,71 +172,29 @@ onUnmounted(() => {
 }
 
 /* Loan Cards Section */
+.loan-list-wrapper {
+  display: grid;
+  grid-template-columns: 1fr 3fr;
+  gap: 20px;
+}
+
 .loan-list-content {
   width: 100%;
 }
 
 .loan-cards {
   display: grid;
-  grid-template-columns: repeat(auto-fill, minmax(400px, 1fr));
+  grid-template-columns: repeat(auto-fill, minmax(300px, 1fr));
   gap: 20px;
   flex-grow: 1;
 }
 
-/* Pagination Section */
-.pagination {
-  display: flex;
-  justify-content: center;
-  margin-top: 30px;
+.loading {
+  text-align: center;
+  font-size: 1.2em;
+  color: #007bff;
 }
 
-.page-btn {
-  margin: 0 10px;
-  padding: 10px 20px;
-  background-color: #007bff;
-  color: white;
-  border: none;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.page-btn:disabled {
-  background-color: #cccccc;
-  cursor: not-allowed;
-  opacity: 0.65;
-}
-
-.page-btn:hover {
-  background-color: #0056b3;
-}
-
-.page-btn:hover:disabled {
-  background-color: #cccecc;
-}
-
-.page-number-btn {
-  margin: 0 5px;
-  padding: 8px 12px;
-  background-color: #f8f9fa;
-  color: #333;
-  border: 1px solid #ddd;
-  border-radius: 4px;
-  cursor: pointer;
-  transition: background-color 0.3s ease;
-}
-
-.page-number-btn:hover {
-  background-color: #e2e6ea;
-}
-
-.page-number-btn.active {
-  background-color: #007bff;
-  color: white;
-  border-color: #007bff;
-}
-
-/* Responsive Design */
 @media (max-width: 1024px) {
   .loan-list-wrapper {
     grid-template-columns: 1fr;
@@ -243,20 +203,28 @@ onUnmounted(() => {
   .filter-toggle-btn {
     visibility: visible;
   }
-
-  .loan-cards {
-    grid-template-columns: repeat(auto-fill, minmax(250px, 1fr));
-  }
 }
 
 @media (max-width: 768px) {
-  .loan-cards {
-    grid-template-columns: 1fr;
+  .loan-list-container {
+    padding: 48px 12px;
+  }
+
+  .search-sort-container {
+    flex-direction: column;
+    align-items: stretch;
   }
 
   .search-bar,
-  .sort-dropdown {
-    max-width: 100%;
+  .sort-dropdown,
+  .filter-toggle-btn {
+    width: 100%;
+    max-width: none;
+    margin-bottom: 10px;
+  }
+
+  .loan-cards {
+    grid-template-columns: 1fr;
   }
 }
 </style>

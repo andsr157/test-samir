@@ -16,7 +16,7 @@ export const useLoanStore = defineStore('loanStore', {
     state: () => ({
         loan: [] as Loan[],
         filteredLoans: [] as Loan[],
-        perPage: 2,
+        perPage: 6,
         currentPage: 1,
         isLoading: false,
     }),

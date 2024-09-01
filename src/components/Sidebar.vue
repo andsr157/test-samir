@@ -82,7 +82,7 @@ onUnmounted(() => {
   background: linear-gradient(180deg, #007bff, #004bbd);
   color: #fff;
   height: 100vh;
-  transition: width 0.3s;
+  transition: width 0.3s ease;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
@@ -114,20 +114,31 @@ onUnmounted(() => {
 }
 
 .sidebar nav ul li {
-  padding: 20px;
+  padding: 8px 20px;
   display: flex;
   align-items: center;
   justify-content: space-between;
 }
 
 .sidebar.sidebar-collapsed nav ul li {
-  justify-content: center !important;
+  justify-content: center;
 }
 
 .sidebar nav ul li a {
   display: flex;
+  padding: 10px 14px;
+  border-radius: 10px;
   align-items: center;
-  transition: background-color 0.2s;
+  transition: background-color 0.2s ease;
+  width: 100%;
+}
+
+.sidebar.sidebar-collapsed nav ul li a {
+  justify-content: center;
+}
+
+.sidebar nav ul li a.active {
+  background-color: #004bbd;
 }
 
 .sidebar nav ul li a span {
@@ -142,7 +153,7 @@ onUnmounted(() => {
 }
 
 .sidebar-collapsed nav ul li a .icon {
-  margin-right: 0px !important;
+  margin-right: 0;
 }
 
 .collapse-btn {

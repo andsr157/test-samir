@@ -147,6 +147,7 @@ export const useLoanStore = defineStore('loanStore', {
         async getLoanData(forceRefresh = false) {
             const now = Date.now();
             if (!forceRefresh && now - this.lastFetch < CACHE_EXPIRATION_TIME && this.loan.length > 0) {
+                this.filteredLoans = [...this.loan];
                 return;
             }
             try {

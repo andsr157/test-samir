@@ -33,6 +33,107 @@ export const useLoanStore = defineStore('loanStore', {
         getLoanById: (state) => (id: string) => {
             return state.loan.find((loan) => loan.id === id);
         },
+
+        totalAmount(): number {
+            return this.loan.reduce((acc, curr) => acc + curr.amount, 0);
+        },
+
+        totalBorrower(): number {
+            return this.loan.reduce((acc, curr) => {
+                if (curr.borrower && curr.borrower.id) {
+                    acc.add(curr.borrower.id);
+                }
+                return acc;
+            }, new Set()).size;
+        },
+        mostFrequentInterestRate(): number | null {
+            if (!this.loan.length) return null;
+
+            const frequencyMap = new Map<number, number>();
+            let mostFrequentRate = null;
+            let maxCount = 0;
+
+            for (const loan of this.loan) {
+                const rate = loan.interestRate;
+
+                if (rate !== undefined) {
+                    const count = (frequencyMap.get(rate) || 0) + 1;
+                    frequencyMap.set(rate, count);
+
+                    if (count > maxCount) {
+                        maxCount = count;
+                        mostFrequentRate = rate;
+                    }
+                }
+            }
+
+            return mostFrequentRate;
+        },
+
+        mostFrequentRiskRating(): string | null {
+            if (!this.loan.length) return null;
+
+            const frequencyMap = new Map<string, number>();
+            let mostFrequentRating = null;
+            let maxCount = 0;
+
+            for (const loan of this.loan) {
+                const rating = loan.riskRating;
+
+                if (rating) {
+                    const count = (frequencyMap.get(rating) || 0) + 1;
+                    frequencyMap.set(rating, count);
+
+                    if (count > maxCount) {
+                        maxCount = count;
+                        mostFrequentRating = rating;
+                    }
+                }
+            }
+            return mostFrequentRating;
+        },
+
+        //get data set sum amount based on term or riskRating
+        getByCategoryData: (state) => (categoryType: 'term' | 'riskRating') => {
+            const categoryMap = new Map<string | number, number>();
+
+            // Collect data into the map
+            for (const loan of state.filteredLoans) {
+                let category: string | number | undefined;
+
+                if (categoryType === 'term') {
+                    category = loan.term;
+                } else if (categoryType === 'riskRating') {
+                    category = loan.riskRating;
+                }
+
+                if (category !== undefined && category !== null) {
+                    const count = (categoryMap.get(category) || 0) + 1;
+                    categoryMap.set(category, count);
+                }
+            }
+
+            const sortedEntries = Array.from(categoryMap.entries()).sort((a, b) => {
+                const [keyA,] = a;
+                const [keyB,] = b;
+
+                // sorting numeric
+                if (typeof keyA === 'number' && typeof keyB === 'number') {
+                    return keyA - keyB;
+                }
+
+                // sorting string
+                return keyA.toString().localeCompare(keyB.toString());
+            });
+
+            const categories = [];
+            const data = [];
+            for (const [key, value] of sortedEntries) {
+                categories.push(key.toString());
+                data.push(value);
+            }
+            return { xaxisCategories: categories, data };
+        }
     },
     actions: {
         async getLoanData() {

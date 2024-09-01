@@ -11,8 +11,7 @@ const props = defineProps<{
 const series = ref([{ name: "Data", data: props.data || [] }])
 const options = ref({
   chart: {
-    id: props.id || "default-id",
-    type: "bar",
+    id: props.id,
     height: "100%",
   },
   xaxis: {
@@ -36,36 +35,18 @@ const options = ref({
   },
   tooltip: {
     y: {
-      formatter: (val: number) => val.toString(),
+      formatter: (val: number) => val.toString() + " loan",
     },
   },
   title: {
     text: props.title || "Default Title",
-    align: "center",
+    align: "left",
     style: {
       fontSize: "16px",
       fontWeight: "bold",
       color: "#333",
     },
   },
-  responsive: [
-    {
-      breakpoint: 1000,
-      options: {
-        chart: {
-          height: 400,
-        },
-      },
-    },
-    {
-      breakpoint: 600,
-      options: {
-        chart: {
-          height: 300,
-        },
-      },
-    },
-  ],
 })
 </script>
 
@@ -80,5 +61,6 @@ const options = ref({
   width: 100%;
   max-width: 100%;
   padding: 1rem;
+  box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
 }
 </style>

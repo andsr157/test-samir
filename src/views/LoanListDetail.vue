@@ -18,7 +18,15 @@ const goBack = () => {
   router.push("/loans")
 }
 
+const resetScroll = () => {
+  window.scrollTo({
+    top: 0,
+    behavior: "smooth",
+  })
+}
+
 onMounted(() => {
+  resetScroll()
   if (!loanStore.loan.length) {
     loanStore.getLoanData()
   }
@@ -80,6 +88,27 @@ onMounted(() => {
         </tbody>
       </table>
     </section>
+
+    <section
+      class="documents-section"
+      v-if="loan.documents && loan.documents.length"
+    >
+      <h2>Documents</h2>
+      <div
+        class="documents-info"
+        v-for="(document, index) in loan.documents"
+        :key="index"
+      >
+        <p><strong>Type:</strong> {{ document.type }}</p>
+        <div v-if="document.url" class="document-image-container">
+          <img
+            :src="document.url"
+            :alt="document.type"
+            class="document-image"
+          />
+        </div>
+      </div>
+    </section>
   </div>
   <div v-else>
     <p>Loading...</p>
@@ -88,7 +117,6 @@ onMounted(() => {
 
 <style scoped>
 .loan-details-container {
-  max-width: 900px;
   margin: 0 auto;
   padding: 20px;
   font-family: "Arial", sans-serif;
@@ -124,7 +152,8 @@ onMounted(() => {
 .loan-info-section,
 .borrower-info-section,
 .collateral-info-section,
-.repayment-schedule-section {
+.repayment-schedule-section,
+.documents-section {
   margin-bottom: 30px;
   background-color: #f8f9fa;
   padding: 20px;
@@ -135,7 +164,8 @@ onMounted(() => {
 .loan-info-section h2,
 .borrower-info-section h2,
 .collateral-info-section h2,
-.repayment-schedule-section h2 {
+.repayment-schedule-section h2,
+.documents-section h2 {
   margin-bottom: 15px;
   color: #007bff;
 }
@@ -162,6 +192,17 @@ onMounted(() => {
 
 .repayment-table th {
   background-color: #f1f1f1;
+}
+
+.document-image-container {
+  margin-top: 10px;
+}
+
+.document-image {
+  max-width: 100%;
+  height: auto;
+  border-radius: 4px;
+  box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
 @media (max-width: 768px) {

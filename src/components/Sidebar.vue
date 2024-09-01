@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref } from "vue"
+import { ref, onMounted, onUnmounted } from "vue"
 import { useSidebarStore } from "@/stores/sidebar"
 import { RouterLink, useRoute } from "vue-router"
 
@@ -12,6 +12,24 @@ const toggleCollapse = () => {
 }
 
 const isRouteActive = (path: string) => route.path === path
+
+const updateSidebarState = () => {
+  if (window.innerWidth < 768) {
+    sidebarStore.isActive = false
+    isCollapsed.value = false
+  } else {
+    sidebarStore.isActive = true
+  }
+}
+
+onMounted(() => {
+  window.addEventListener("resize", updateSidebarState)
+  updateSidebarState()
+})
+
+onUnmounted(() => {
+  window.removeEventListener("resize", updateSidebarState)
+})
 </script>
 
 <template>
@@ -19,14 +37,16 @@ const isRouteActive = (path: string) => route.path === path
     :class="[
       'sidebar',
       {
-        'sidebar-active': sidebarStore.isSidebarActive,
+        'sidebar-active': sidebarStore.isActive,
         'sidebar-collapsed': isCollapsed,
       },
     ]"
   >
     <div class="sidebar-header">
       <span v-if="!isCollapsed" class="sidebar-title">SAMIR LOAN</span>
-      <button @click="toggleCollapse" class="collapse-btn">☰</button>
+      <button @click="toggleCollapse" class="collapse-btn">
+        <img class="icon" src="@/assets/icon/menu.svg" />
+      </button>
     </div>
 
     <nav>
@@ -37,7 +57,7 @@ const isRouteActive = (path: string) => route.path === path
             @click="sidebarStore.closeSidebar"
             :class="{ active: isRouteActive('/') }"
           >
-            <p class="icon">🏠</p>
+            <img class="icon" src="@/assets/icon/home.svg" />
             <span v-if="!isCollapsed">Home</span>
           </RouterLink>
         </li>
@@ -47,7 +67,7 @@ const isRouteActive = (path: string) => route.path === path
             @click="sidebarStore.closeSidebar"
             :class="{ active: isRouteActive('/loans') }"
           >
-            <p class="icon">📝</p>
+            <img class="icon" src="@/assets/icon/loan-list.svg" />
             <span v-if="!isCollapsed">Loan List</span>
           </RouterLink>
         </li>
@@ -59,23 +79,18 @@ const isRouteActive = (path: string) => route.path === path
 <style scoped>
 .sidebar {
   width: 220px;
-  background: linear-gradient(180deg, #0062cc, #004bbd);
+  background: linear-gradient(180deg, #007bff, #004bbd);
   color: #fff;
-  position: fixed;
-  top: 0;
-  left: -220px;
-  height: 100%;
-  transition: left 0.3s, width 0.3s;
-  z-index: 1000;
+  height: 100vh;
+  transition: width 0.3s;
   display: flex;
   flex-direction: column;
   justify-content: flex-start;
   overflow: hidden;
+  position: sticky;
+  top: 0;
 }
 
-.sidebar-active {
-  left: 0;
-}
 .sidebar-collapsed {
   width: 80px;
 }
@@ -85,7 +100,6 @@ const isRouteActive = (path: string) => route.path === path
   justify-content: space-between;
   align-items: center;
   padding: 20px;
-  background-color: #004bbd;
 }
 
 .sidebar-title {
@@ -100,29 +114,35 @@ const isRouteActive = (path: string) => route.path === path
 }
 
 .sidebar nav ul li {
-  padding: 15px 20px;
+  padding: 20px;
   display: flex;
   align-items: center;
+  justify-content: space-between;
+}
+
+.sidebar.sidebar-collapsed nav ul li {
+  justify-content: center !important;
 }
 
 .sidebar nav ul li a {
-  color: #fff;
-  text-decoration: none;
   display: flex;
   align-items: center;
   transition: background-color 0.2s;
-  width: 100%;
+}
+
+.sidebar nav ul li a span {
+  color: #fff;
+  font-size: 17px;
+  font-weight: 500;
+  text-decoration: none;
 }
 
 .sidebar nav ul li a .icon {
-  width: 28px;
-  height: 28px;
-  margin-right: 15px;
+  margin-right: 12px;
 }
 
-.sidebar nav ul li a.active,
-.sidebar nav ul li a:hover {
-  background-color: rgba(255, 255, 255, 0.1);
+.sidebar-collapsed nav ul li a .icon {
+  margin-right: 0px !important;
 }
 
 .collapse-btn {
@@ -135,14 +155,37 @@ const isRouteActive = (path: string) => route.path === path
   align-items: center;
 }
 
-.icon {
-  width: 24px;
-  height: 24px;
+.sidebar-header .icon,
+.sidebar nav ul li a .icon {
+  width: 25px;
+  height: 25px;
+  object-fit: cover;
+  color: white;
 }
 
 @media (min-width: 768px) {
   .sidebar {
+    display: flex;
+  }
+}
+
+@media (max-width: 768px) {
+  .sidebar {
+    position: fixed;
+    top: 50px;
     left: 0;
+    height: calc(100vh - 50px);
+    z-index: 1000;
+    transform: translateX(-100%);
+    transition: transform 0.3s;
+  }
+
+  .sidebar-active {
+    transform: translateX(0);
+  }
+
+  .sidebar-header {
+    display: none;
   }
 }
 </style>

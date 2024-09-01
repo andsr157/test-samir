@@ -3,7 +3,7 @@ import { onMounted, onUnmounted, ref, watch } from "vue"
 import { storeToRefs } from "pinia"
 import { useLoanStore } from "@/stores/loan"
 import LoanCard from "@/components/LoanCard.vue"
-import FilterCard from "@/components/FilterCard.vue"
+import LoanFilter from "@/components/LoanFilter.vue"
 import Pagination from "@/components/Pagination.vue"
 import LoanSorting from "@/components/LoanSorting.vue"
 import { SORTING_LIST, FILTER_LIST } from "@/constants/loan.constants"
@@ -88,7 +88,7 @@ onUnmounted(() => {
     <div v-if="isLoading" class="loading">Loading...</div>
 
     <div v-else class="loan-list-wrapper">
-      <FilterCard
+      <LoanFilter
         v-show="showFilter"
         :filterOptions="FILTER_LIST"
         :onFilterChange="loanStore.filterLoans"

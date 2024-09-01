@@ -1,14 +1,19 @@
 <script setup lang="ts">
 import Header from "@/components/Header.vue"
 import Sidebar from "@/components/Sidebar.vue"
+import { useSidebarStore } from "@/stores/sidebar"
+
+const sidebarStore = useSidebarStore()
 </script>
 
 <template>
   <div class="layout">
-    <Header />
-    <Sidebar />
-    <div class="main-content">
-      <slot />
+    <Header class="header" />
+    <div class="main-container">
+      <Sidebar />
+      <div class="main-content">
+        <slot />
+      </div>
     </div>
   </div>
 </template>
@@ -20,23 +25,19 @@ import Sidebar from "@/components/Sidebar.vue"
   height: 100vh;
 }
 
-.main-content {
+.main-container {
+  display: flex;
   flex: 1;
-  transition: margin-left 0.3s;
 }
 
-@media (min-width: 768px) {
-  .layout {
-    flex-direction: row;
-  }
+.main-content {
+  flex: 1;
+  padding: 12px 24px;
+}
 
-  .main-content {
-    margin-left: 170px;
-    margin-right: 20px;
-  }
-
-  .layout .sidebar-collapsed ~ .main-content {
-    margin-left: 80px;
+@media (max-width: 768px) {
+  .main-container {
+    flex-direction: column;
   }
 }
 </style>

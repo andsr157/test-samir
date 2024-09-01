@@ -2,6 +2,7 @@
 import { useLoanStore } from "@/stores/loan"
 import SummaryCard from "@/components/SummaryCard.vue"
 import ChartBar from "@/components/chart/Bar.vue"
+import ChartDonut from "@/components/chart/Donut.vue"
 import { computed, onMounted } from "vue"
 
 const loanStore = useLoanStore()
@@ -19,7 +20,7 @@ const cardData = computed(() => [
   },
 ])
 
-// const riskRatingData = computed(() => loanStore.getByCategoryData("riskRating"))
+const riskRatingData = computed(() => loanStore.getByCategoryData("riskRating"))
 const termData = computed(() => loanStore.getByCategoryData("term"))
 
 onMounted(() => {
@@ -38,13 +39,24 @@ onMounted(() => {
       />
     </div>
     <div class="chart-container">
-      <ChartBar
-        v-if="termData.xaxisCategories.length > 0 && termData.data.length > 0"
-        id="termChart"
-        title="Total Number of Loans by Term (month)"
-        :xaxisCategories="termData.xaxisCategories"
-        :data="termData.data"
-      />
+      <div class="chart-item bar-chart">
+        <ChartBar
+          v-if="termData.labels.length > 0 && termData.data.length > 0"
+          id="termChart"
+          title="Total Number of Loans by Term (month)"
+          :xaxisCategories="termData.labels"
+          :data="termData.data"
+        />
+      </div>
+      <div class="chart-item donut-chart">
+        <ChartDonut
+          v-if="riskRatingData.data.length > 0"
+          id="riskRatingChart"
+          title="Total Number of Loans by Risk Rating"
+          :data="riskRatingData.data"
+          :labels="riskRatingData.labels"
+        />
+      </div>
     </div>
   </div>
 </template>
@@ -64,14 +76,31 @@ onMounted(() => {
 }
 
 .chart-container {
+  display: flex;
   margin-top: 24px;
-  width: 50vw;
+  gap: 1rem;
+}
+
+.chart-item {
+  flex: 1;
+}
+
+.bar-chart {
+  flex: 3;
+}
+
+.donut-chart {
+  flex: 2;
 }
 
 @media (max-width: 1024px) {
   .summary-container > * {
     flex: 1 1 calc(32% - 1rem);
     max-width: calc(32% - 1rem);
+  }
+
+  .chart-container {
+    flex-direction: column;
   }
 }
 
@@ -90,6 +119,10 @@ onMounted(() => {
   .summary-container > * {
     flex: 1 1 calc(100% - 1rem);
     max-width: calc(100% - 1rem);
+  }
+
+  .chart-container {
+    flex-direction: column;
   }
 }
 </style>

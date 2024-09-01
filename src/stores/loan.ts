@@ -140,7 +140,7 @@ export const useLoanStore = defineStore('loanStore', {
                 categories.push(key.toString());
                 data.push(value);
             }
-            return { xaxisCategories: categories, data };
+            return { labels: categories, data };
         }
     },
     actions: {

@@ -12,6 +12,8 @@ interface FilterCriteria {
     riskRating?: riskRating | null;
 }
 
+const CACHE_EXPIRATION_TIME = 3600 * 1000;
+
 export const useLoanStore = defineStore('loanStore', {
     state: () => ({
         loan: [] as Loan[],
@@ -19,7 +21,13 @@ export const useLoanStore = defineStore('loanStore', {
         perPage: 6,
         currentPage: 1,
         isLoading: false,
+        lastFetch: 0
     }),
+    persist: {
+        key: 'loanStore',
+        storage: localStorage,
+        paths: ['loan', 'lastFetch']
+    },
     getters: {
         totalPages(): number {
             return Math.ceil(this.filteredLoans.length / this.perPage);
@@ -136,13 +144,18 @@ export const useLoanStore = defineStore('loanStore', {
         }
     },
     actions: {
-        async getLoanData() {
+        async getLoanData(forceRefresh = false) {
+            const now = Date.now();
+            if (!forceRefresh && now - this.lastFetch < CACHE_EXPIRATION_TIME && this.loan.length > 0) {
+                return;
+            }
             try {
                 this.isLoading = true;
-                const res = await this.$axios.get("/json/loans.json");
+                const res = await this.$axios.get('/json/loans.json');
                 if (res.status === 200) {
                     this.loan = res.data;
                     this.filteredLoans = [...this.loan];
+                    this.lastFetch = now;
                 }
                 this.isLoading = false;
             } catch (error) {

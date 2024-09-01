@@ -19,7 +19,7 @@ const cardData = computed(() => [
   },
 ])
 
-const riskRatingData = computed(() => loanStore.getByCategoryData("riskRating"))
+// const riskRatingData = computed(() => loanStore.getByCategoryData("riskRating"))
 const termData = computed(() => loanStore.getByCategoryData("term"))
 
 onMounted(() => {

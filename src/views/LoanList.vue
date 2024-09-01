@@ -51,6 +51,11 @@ const onSearch = (isImmediate = false) => {
   }
 }
 
+//forced refresh data
+const refreshData = async () => {
+  await loanStore.getLoanData(true)
+}
+
 onMounted(async () => {
   window.addEventListener("resize", updateWindowWidth)
   await loanStore.getLoanData()
@@ -83,6 +88,7 @@ onUnmounted(() => {
       <button @click="handleShowFilter" class="filter-toggle-btn">
         Filters
       </button>
+      <button @click="refreshData" class="refresh-button">Refresh Data</button>
     </div>
 
     <div v-if="isLoading" class="loading">Loading...</div>
@@ -157,7 +163,7 @@ onUnmounted(() => {
 }
 
 .filter-toggle-btn {
-  visibility: hidden;
+  display: none;
   flex: 0 1 auto;
   padding: 10px 15px;
   background-color: #007bff;
@@ -170,6 +176,20 @@ onUnmounted(() => {
 
 .filter-toggle-btn:hover {
   background-color: #0056b3;
+}
+
+.refresh-button {
+  padding: 10px 15px;
+  background-color: #28a745;
+  color: white;
+  border: none;
+  border-radius: 4px;
+  cursor: pointer;
+  transition: background-color 0.3s ease;
+}
+
+.refresh-button:hover {
+  background-color: #218838;
 }
 
 /* Loan Cards Section */
@@ -202,7 +222,7 @@ onUnmounted(() => {
   }
 
   .filter-toggle-btn {
-    visibility: visible;
+    display: block;
   }
 }
 

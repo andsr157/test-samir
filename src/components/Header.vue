@@ -49,7 +49,7 @@ const sidebarStore = useSidebarStore()
   outline: none;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .header {
     display: none;
   }

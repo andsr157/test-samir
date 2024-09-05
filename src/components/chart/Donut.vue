@@ -13,6 +13,8 @@ const options = ref({
   chart: {
     id: props.id,
     height: "100%",
+    width: "100%",
+    responsive: true,
   },
   labels: props.labels || [],
   title: {

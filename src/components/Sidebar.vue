@@ -9,12 +9,13 @@ const isCollapsed = ref(false)
 
 const toggleCollapse = () => {
   isCollapsed.value = !isCollapsed.value
+  window.dispatchEvent(new Event("resize"))
 }
 
 const isRouteActive = (path: string) => route.path === path
 
 const updateSidebarState = () => {
-  if (window.innerWidth < 768) {
+  if (window.innerWidth < 1024) {
     sidebarStore.isActive = false
     isCollapsed.value = false
   } else {
@@ -82,10 +83,9 @@ onUnmounted(() => {
   background: linear-gradient(180deg, #007bff, #004bbd);
   color: #fff;
   height: 100vh;
-  transition: width 0.3s ease;
+  transition: width 0.3s ease, transform 0.3s ease;
   display: flex;
   flex-direction: column;
-  justify-content: flex-start;
   overflow: hidden;
   position: sticky;
   top: 0;
@@ -93,6 +93,7 @@ onUnmounted(() => {
 
 .sidebar-collapsed {
   width: 80px;
+  transition: width 0.3s ease;
 }
 
 .sidebar-header {
@@ -120,7 +121,7 @@ onUnmounted(() => {
   justify-content: space-between;
 }
 
-.sidebar.sidebar-collapsed nav ul li {
+.sidebar-collapsed nav ul li {
   justify-content: center;
 }
 
@@ -145,7 +146,6 @@ onUnmounted(() => {
   color: #fff;
   font-size: 17px;
   font-weight: 500;
-  text-decoration: none;
 }
 
 .sidebar nav ul li a .icon {
@@ -170,17 +170,15 @@ onUnmounted(() => {
 .sidebar nav ul li a .icon {
   width: 25px;
   height: 25px;
-  object-fit: cover;
-  color: white;
 }
 
-@media (min-width: 768px) {
+@media (min-width: 1024px) {
   .sidebar {
-    display: flex;
+    transform: none;
   }
 }
 
-@media (max-width: 768px) {
+@media (max-width: 1024px) {
   .sidebar {
     position: fixed;
     top: 50px;
@@ -188,7 +186,6 @@ onUnmounted(() => {
     height: calc(100vh - 50px);
     z-index: 1000;
     transform: translateX(-100%);
-    transition: transform 0.3s;
   }
 
   .sidebar-active {

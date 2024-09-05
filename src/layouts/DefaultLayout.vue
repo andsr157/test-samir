@@ -34,10 +34,4 @@ const sidebarStore = useSidebarStore()
   flex: 1;
   padding: 12px 24px;
 }
-
-@media (max-width: 768px) {
-  .main-container {
-    flex-direction: column;
-  }
-}
 </style>

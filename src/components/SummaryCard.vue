@@ -28,34 +28,31 @@ const hover = ref(false)
 
 <style scoped>
 .card-container {
-  display: flex;
-  justify-content: space-between;
-  min-width: 260px;
-  align-items: center;
-  height: 9rem;
+  width: 100%;
+  background-color: #ffffff;
   box-shadow: 0 10px 15px rgba(0, 0, 0, 0.1);
   border-radius: 0.375rem;
-  padding: 0 1.25rem;
-  transition: transform 0.5s ease, background-color 0.5s ease;
+  padding: 1.5rem;
+  transition: transform 0.3s ease, background-color 0.3s ease;
+  cursor: pointer;
 }
 
 .card-hover {
   background-color: #007bff;
-  transform: translateY(-0.75rem);
+  transform: translateY(-0.5rem);
 }
 
 .card-default {
   background-color: #ffffff;
 }
 
-.text-container {
-  display: flex;
-  flex-direction: column-reverse;
-  gap: 0.75rem;
+.text-container h3 {
+  font-size: 1.2rem;
+  font-weight: 600;
 }
 
 .text-container h4 {
-  font-size: 20px;
+  font-size: 1.5rem;
   font-weight: 800;
 }
 
@@ -65,5 +62,19 @@ const hover = ref(false)
 
 .text-white {
   color: #ffffff;
+}
+
+@media (max-width: 768px) {
+  .card-container {
+    padding: 1rem;
+  }
+
+  .text-container h4 {
+    font-size: 1.25rem;
+  }
+
+  .text-container h3 {
+    font-size: 1rem;
+  }
 }
 </style>

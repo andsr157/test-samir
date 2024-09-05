@@ -29,7 +29,7 @@ onMounted(() => {
 </script>
 
 <template>
-  <div class="home-containerr">
+  <div class="home-container">
     <div class="summary-container">
       <SummaryCard
         v-for="(card, index) in cardData"
@@ -67,12 +67,17 @@ onMounted(() => {
   flex-wrap: wrap;
   gap: 1rem;
   margin-top: 60px;
-  justify-content: space-around;
+  justify-content: space-between;
+  align-items: stretch;
 }
 
 .summary-container > * {
-  flex: 1 1 calc(24% - 1rem);
-  max-width: calc(24% - 1rem);
+  flex: 1 1 calc(25% - 1rem);
+  max-width: calc(25% - 1rem);
+  display: flex;
+  flex-direction: column;
+  justify-content: space-between;
+  min-height: 100px;
 }
 
 .chart-container {
@@ -95,8 +100,8 @@ onMounted(() => {
 
 @media (max-width: 1024px) {
   .summary-container > * {
-    flex: 1 1 calc(32% - 1rem);
-    max-width: calc(32% - 1rem);
+    flex: 1 1 calc(50% - 1rem);
+    max-width: calc(50% - 1rem);
   }
 
   .chart-container {
@@ -106,8 +111,8 @@ onMounted(() => {
 
 @media (max-width: 768px) {
   .summary-container > * {
-    flex: 1 1 calc(48% - 1rem);
-    max-width: calc(48% - 1rem);
+    flex: 1 1 calc(100% - 1rem);
+    max-width: calc(100% - 1rem);
   }
 
   .chart-container {

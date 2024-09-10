@@ -98,6 +98,7 @@ onUnmounted(() => {
         v-show="showFilter"
         :filterOptions="FILTER_LIST"
         :onFilterChange="loanStore.filterLoans"
+        @hideFilter="handleShowFilter"
       />
 
       <div class="loan-list-content">
@@ -217,6 +218,9 @@ onUnmounted(() => {
 }
 
 @media (max-width: 1024px) {
+  .loan-list-container {
+    padding: 48px 0px;
+  }
   .loan-list-wrapper {
     grid-template-columns: 1fr;
   }

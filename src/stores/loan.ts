@@ -185,7 +185,7 @@ export const useLoanStore = defineStore('loanStore', {
 
         filterLoans(filters: FilterCriteria) {
             const isAllFiltersNull = Object.values(filters).every(filter =>
-                filter?.min === null || filter === null || (Array.isArray(filter) && filter.length === 0)
+                filter.min === null || filter.max === null || (Array.isArray(filter) && filter.length === 0)
             );
 
             if (isAllFiltersNull) {

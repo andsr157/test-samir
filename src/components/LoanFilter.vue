@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { ref, watch } from "vue"
+import { ref } from "vue"
 import type { FilterList } from "@/types/loan"
 
 const props = defineProps<{
@@ -7,10 +7,12 @@ const props = defineProps<{
   onFilterChange: (
     filters: Record<
       string,
-      { min: number | null; max: number | null } | { selected: string[] | null }
+      { min: number | null; max: number | null } | { selected: string[] }
     >
   ) => void
 }>()
+
+const emit = defineEmits()
 
 const filterOptions = ref(props.filterOptions)
 
@@ -22,64 +24,44 @@ const applyFilters = () => {
         max: filter.values.max ?? null,
       }
     } else if (filter.type === "multiple") {
-      const selectedValues = Array.isArray(filter.values.selected)
-        ? filter.values.selected.filter(
-            (item): item is string => item !== undefined && item !== null
-          )
-        : []
+      const selectedValues = filter.values.selected ?? []
 
       acc[filter.id] = {
         selected: selectedValues,
       }
     }
     return acc
-  }, {} as Record<string, { min: number | null; max: number | null } | { selected: string[] | null }>)
+  }, {} as Record<string, { min: number | null; max: number | null } | { selected: string[] }>)
   props.onFilterChange(filters)
+
+  if (window.innerWidth <= 1024) emit("hideFilter")
 }
 
-// Watching every change on filter field
-filterOptions.value.forEach((filter) => {
-  watch(
-    () => ({ ...filter.values }),
-    (newValues) => {
-      if (filter.type === "range") {
-        const min = typeof newValues.min === "number" ? newValues.min : null
-        const max = typeof newValues.max === "number" ? newValues.max : null
-
-        if (filter.values.min !== min) filter.values.min = min
-        if (filter.values.max !== max) filter.values.max = max
-      } else if (filter.type === "multiple") {
-        const selected = Array.isArray(newValues.selected)
-          ? newValues.selected.filter((item) => item !== "" && item !== null)
-          : []
-
-        if (
-          JSON.stringify(filter.values.selected) !== JSON.stringify(selected)
-        ) {
-          filter.values.selected = selected
-        }
-      }
-    },
-    { deep: true }
-  )
-})
+//handle when input is empty
+const handleEmptyInput = (filter: any, type: "min" | "max") => {
+  if (filter.values[type] === "") {
+    filter.values[type] = null
+  }
+}
 
 // Handle selection changes for multiple-choice filters
 const handleMultipleSelection = (filterId: string, option: string) => {
   const filter = filterOptions.value.find((f) => f.id === filterId)
-  if (!filter || filter.type !== "multiple") return
+  if (
+    !filter ||
+    filter.type !== "multiple" ||
+    !Array.isArray(filter.values.selected)
+  )
+    return
 
-  if (!Array.isArray(filter.values.selected)) {
-    filter.values.selected = []
-  }
+  const selectedValues = [...filter.values.selected]
+  const isSelected = selectedValues.includes(option)
 
-  const index = filter.values.selected.indexOf(option)
-  if (index === -1) {
-    filter.values.selected.push(option)
+  if (isSelected) {
+    filter.values.selected = selectedValues.filter((item) => item !== option)
   } else {
-    filter.values.selected.splice(index, 1)
+    filter.values.selected = [...selectedValues, option]
   }
-  console.log("filter", filter.values.selected)
 }
 </script>
 
@@ -101,6 +83,7 @@ const handleMultipleSelection = (filterId: string, option: string) => {
             type="number"
             :id="filter.id + 'Min'"
             v-model.number="filter.values.min"
+            @input="handleEmptyInput(filter, 'min')"
             :placeholder="'Min ' + filter.label"
           />
           <input
@@ -108,6 +91,7 @@ const handleMultipleSelection = (filterId: string, option: string) => {
             type="number"
             :id="filter.id + 'Max'"
             v-model.number="filter.values.max"
+            @input="handleEmptyInput(filter, 'max')"
             :placeholder="'Max ' + filter.label"
           />
           <div v-if="filter.type === 'multiple'" class="checkbox-group">

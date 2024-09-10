@@ -50,6 +50,6 @@ export interface FilterList {
         min?: number | null,
         max?: number | null,
         options?: string[];
-        selected?: string | string[] | null;
+        selected?: string[];
     }
 }

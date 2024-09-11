@@ -122,7 +122,6 @@ onUnmounted(() => {
 
 <style scoped>
 .loan-list-container {
-  padding: 24px 0px;
   margin: 0 auto;
   font-family: "Arial", sans-serif;
   color: #333;
@@ -218,9 +217,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 1024px) {
-  .loan-list-container {
-    padding: 48px 0px;
-  }
   .loan-list-wrapper {
     grid-template-columns: 1fr;
   }
@@ -231,10 +227,6 @@ onUnmounted(() => {
 }
 
 @media (max-width: 768px) {
-  .loan-list-container {
-    padding: 48px 12px;
-  }
-
   .search-sort-container {
     flex-direction: column;
     align-items: stretch;

@@ -32,6 +32,6 @@ const sidebarStore = useSidebarStore()
 
 .main-content {
   flex: 1;
-  padding: 12px 24px;
+  padding: 64px 24px;
 }
 </style>

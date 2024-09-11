@@ -1,5 +1,5 @@
 <script setup lang="ts">
-import { computed, defineProps } from "vue"
+import { computed } from "vue"
 
 const props = defineProps<{
   currentPage: number
@@ -60,8 +60,8 @@ const goToPage = (page: number): void => {
 .pagination {
   display: flex;
   justify-content: center;
-  gap: 8px; /* Space between buttons */
-  margin-top: 20px; /* Adjusted margin */
+  gap: 8px;
+  margin-top: 20px;
 }
 
 .page-btn,
@@ -73,7 +73,7 @@ const goToPage = (page: number): void => {
   border-radius: 4px;
   cursor: pointer;
   transition: background-color 0.3s ease;
-  font-size: 1em; /* Default font size */
+  font-size: 1em;
 }
 
 .page-btn:disabled {
@@ -102,7 +102,6 @@ const goToPage = (page: number): void => {
   border-color: #007bff;
 }
 
-/* Responsive Design */
 @media (max-width: 768px) {
   .pagination {
     gap: 6px;

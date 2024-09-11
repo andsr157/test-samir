@@ -31,6 +31,11 @@ onMounted(() => {
     loanStore.getLoanData()
   }
 })
+
+function getDocumentUrl(url: string) {
+  const path = "../assets" + url
+  return new URL(path, import.meta.url).href
+}
 </script>
 
 <template>
@@ -102,7 +107,7 @@ onMounted(() => {
         <p><strong>Type:</strong> {{ document.type }}</p>
         <div v-if="document.url" class="document-image-container">
           <img
-            :src="document.url"
+            :src="getDocumentUrl(document.url)"
             :alt="document.type"
             class="document-image"
           />
@@ -206,11 +211,6 @@ onMounted(() => {
 }
 
 @media (max-width: 768px) {
-  .loan-details-header {
-    flex-direction: column;
-    align-items: flex-start;
-  }
-
   .back-btn {
     margin-top: 10px;
   }
@@ -218,6 +218,13 @@ onMounted(() => {
   .repayment-table th,
   .repayment-table td {
     padding: 8px;
+  }
+}
+
+@media (max-width: 480px) {
+  .loan-details-header {
+    flex-direction: column;
+    align-items: flex-start;
   }
 }
 </style>
